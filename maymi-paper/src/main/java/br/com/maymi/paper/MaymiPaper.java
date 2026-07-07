@@ -7,9 +7,10 @@ public class MaymiPaper extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        getLogger().info("===============================");
-        getLogger().info(" Maymi Paper iniciado!");
-        getLogger().info("===============================");
+        getLogger().info("======================================");
+        getLogger().info("Maymi Paper iniciado!");
+        getLogger().info("Versão: " + getPluginMeta().getVersion());
+        getLogger().info("======================================");
 
     }
 
