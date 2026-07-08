@@ -1,10 +1,9 @@
 name: Maymi
 version: 0.1.0
-
 main: br.com.maymi.paper.MaymiPaper
 
 api-version: '1.21'
 
 author: João Victor Souza
 
-description: Plataforma de integração entre Minecraft e Discord.
+description: Ponte entre Minecraft e Discord.
