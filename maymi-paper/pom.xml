@@ -32,6 +32,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>br.com.maymi</groupId>
+            <artifactId>maymi-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>
