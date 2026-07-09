@@ -1,4 +1,4 @@
-package br.com.maymi.common.model;
+package br.com.maymi.common.network.model;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

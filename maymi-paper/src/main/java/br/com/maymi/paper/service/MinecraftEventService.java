@@ -1,37 +1,17 @@
-package br.com.maymi.paper.listeners;
+package br.com.maymi.paper.service;
 
-import br.com.maymi.common.model.PlayerJoinMessage;
-import br.com.maymi.paper.service.MinecraftEventService;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import br.com.maymi.common.network.model.PlayerJoinMessage;
 
-import java.time.LocalDateTime;
+public class MinecraftEventService {
 
-public class PlayerConnectionListener implements Listener {
+    public void playerJoined(PlayerJoinMessage message) {
 
-    private final MinecraftEventService eventService;
-
-    public PlayerConnectionListener() {
-
-        this.eventService = new MinecraftEventService();
-
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-
-        PlayerJoinMessage message = new PlayerJoinMessage(
-
-                event.getPlayer().getUniqueId(),
-
-                event.getPlayer().getName(),
-
-                LocalDateTime.now()
-
-        );
-
-        eventService.playerJoined(message);
+        System.out.println("==================================");
+        System.out.println("Novo evento recebido!");
+        System.out.println("Jogador: " + message.getPlayerName());
+        System.out.println("UUID: " + message.getPlayerId());
+        System.out.println("Horário: " + message.getJoinedAt());
+        System.out.println("==================================");
 
     }
 
