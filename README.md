@@ -29,7 +29,7 @@ Minecraft
 
 ## Módulos
 
-```
+```text
 maymi-common
 maymi-core
 maymi-paper
@@ -40,11 +40,12 @@ maymi-paper
 - [x] Multi Module Maven
 - [x] Bot Discord
 - [x] Plugin Paper
-- [ ] Socket
-- [ ] Eventos
+- [x] Comunicação via Socket TCP
+- [ ] Sistema de Eventos
 - [ ] Slash Commands
-- [ ] Dashboard
-- [ ] IA
+- [ ] Dashboard Web
+- [ ] Integração com Banco de Dados
+- [ ] IA para Assistente do Servidor
 
 ## Status
 

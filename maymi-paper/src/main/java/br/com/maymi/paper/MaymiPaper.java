@@ -1,6 +1,7 @@
 package br.com.maymi.paper;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import br.com.maymi.paper.listeners.PlayerConnectionListener;
 
 public class MaymiPaper extends JavaPlugin {
 
@@ -11,6 +12,11 @@ public class MaymiPaper extends JavaPlugin {
         getLogger().info("Maymi Paper iniciado!");
         getLogger().info("Versão: " + getPluginMeta().getVersion());
         getLogger().info("==========================");
+
+        getServer().getPluginManager().registerEvents(
+                new PlayerConnectionListener(),
+                this
+        );
 
     }
 
