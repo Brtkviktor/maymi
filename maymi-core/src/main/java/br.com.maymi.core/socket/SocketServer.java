@@ -36,7 +36,7 @@ public class SocketServer {
                 Packet packet =
                         PacketDeserializer.deserialize(json);
 
-                System.out.println(packet);
+                dispatcher.dispatch(packet);
 
                 socket.close();
 
