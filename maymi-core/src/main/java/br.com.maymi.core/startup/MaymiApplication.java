@@ -19,7 +19,7 @@ public class MaymiApplication {
                 """);
 
         System.out.println("=================================");
-        System.out.println("MAYMI v0.1.0");
+        System.out.println("MAYMI v0.3.0");
         System.out.println("=================================");
 
         DiscordBot bot = new DiscordBot();

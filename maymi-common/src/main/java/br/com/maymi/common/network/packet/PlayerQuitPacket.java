@@ -1,13 +1,18 @@
 package br.com.maymi.common.network.packet;
 
-import br.com.maymi.common.network.Packet;
+import br.com.maymi.common.network.AbstractPacket;
 import br.com.maymi.common.network.PacketType;
 
-public class PlayerQuitPacket implements Packet {
+public class PlayerQuitPacket extends AbstractPacket {
 
-    private final String playerName;
+    private String playerName;
+
+    public PlayerQuitPacket() {
+        super(PacketType.PLAYER_QUIT);
+    }
 
     public PlayerQuitPacket(String playerName) {
+        super(PacketType.PLAYER_QUIT);
         this.playerName = playerName;
     }
 
@@ -15,9 +20,8 @@ public class PlayerQuitPacket implements Packet {
         return playerName;
     }
 
-    @Override
-    public PacketType getType() {
-        return PacketType.PLAYER_QUIT;
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 
 }

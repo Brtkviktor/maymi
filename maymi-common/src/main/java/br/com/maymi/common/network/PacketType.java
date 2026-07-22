@@ -4,6 +4,13 @@ public enum PacketType {
 
     PLAYER_JOIN,
     PLAYER_QUIT,
-    CHAT
+    PLAYER_CHAT,
+    PLAYER_DEATH,
+    DISCORD_CHAT,
+    COMMAND,
+    LIST_RESPONSE,
+    TPS_RESPONSE,
+    RAM_RESPONSE,
+    TIME_RESPONSE
 
 }

@@ -2,9 +2,11 @@ package br.com.maymi.core.discord.bot;
 
 import br.com.maymi.core.configuration.ConfigurationManager;
 import br.com.maymi.core.discord.DiscordManager;
+import br.com.maymi.core.discord.listener.DiscordMessageListener;
 import br.com.maymi.core.shared.util.Console;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class DiscordBot {
 
@@ -19,6 +21,8 @@ public class DiscordBot {
             Console.info("Conectando ao Discord...");
 
             jda = JDABuilder.createDefault(token)
+                    .enableIntents(GatewayIntent.MESSAGE_CONTENT)
+                    .addEventListeners(new DiscordMessageListener())
                     .build();
 
             jda.awaitReady();

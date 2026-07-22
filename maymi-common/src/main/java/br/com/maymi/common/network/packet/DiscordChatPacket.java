@@ -3,32 +3,31 @@ package br.com.maymi.common.network.packet;
 import br.com.maymi.common.network.AbstractPacket;
 import br.com.maymi.common.network.PacketType;
 
-public class ChatPacket extends AbstractPacket {
+public class DiscordChatPacket extends AbstractPacket {
 
-    private String playerName;
-
+    private String author;
     private String message;
 
-    public ChatPacket() {
-        super(PacketType.PLAYER_CHAT);
+    public DiscordChatPacket() {
+        super(PacketType.DISCORD_CHAT);
     }
 
-    public ChatPacket(String playerName, String message) {
-        super(PacketType.PLAYER_CHAT);
-        this.playerName = playerName;
+    public DiscordChatPacket(String author, String message) {
+        super(PacketType.DISCORD_CHAT);
+        this.author = author;
         this.message = message;
     }
 
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
+    public String getAuthor() {
+        return author;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public void setMessage(String message) {
@@ -37,21 +36,18 @@ public class ChatPacket extends AbstractPacket {
 
     @Override
     public String toString() {
-
         return """
                 ==============================
-                CHAT PACKET
+                DISCORD CHAT PACKET
                 ------------------------------
-                Jogador: %s
+                Autor: %s
                 Mensagem: %s
                 Tipo: %s
                 ==============================
                 """.formatted(
-                playerName,
+                author,
                 message,
                 getType()
         );
-
     }
-
 }

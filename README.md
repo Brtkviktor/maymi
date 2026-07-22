@@ -40,12 +40,18 @@ maymi-paper
 - [x] Multi Module Maven
 - [x] Bot Discord
 - [x] Plugin Paper
-- [x] Comunicação via Socket TCP
-- [ ] Sistema de Eventos
+- [x] Socket TCP
+- [x] Packet System
+- [x] Packet Dispatcher
+- [x] Player Join Event
+- [x] Discord Integration
+- [ ] Chat Bridge
+- [ ] Player Quit
+- [ ] Death Messages
 - [ ] Slash Commands
-- [ ] Dashboard Web
-- [ ] Integração com Banco de Dados
-- [ ] IA para Assistente do Servidor
+- [ ] Dashboard
+- [ ] Spring Boot API
+- [ ] AI Assistant
 
 ## Status
 
