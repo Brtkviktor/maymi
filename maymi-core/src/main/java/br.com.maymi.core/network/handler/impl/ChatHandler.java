@@ -5,10 +5,20 @@ import br.com.maymi.core.discord.DiscordService;
 
 public class ChatHandler {
 
-    private final DiscordService discordService =
-            new DiscordService();
+    private final DiscordService discordService;
 
-    public void handle(ChatPacket packet) {
+    public ChatHandler(
+            DiscordService discordService
+    ) {
+
+        this.discordService =
+                discordService;
+
+    }
+
+    public void handle(
+            ChatPacket packet
+    ) {
 
         System.out.println("""
                 ==============================
@@ -22,7 +32,9 @@ public class ChatHandler {
                 packet.getMessage()
         ));
 
-        discordService.sendChat(packet);
+        discordService.sendChat(
+                packet
+        );
 
     }
 

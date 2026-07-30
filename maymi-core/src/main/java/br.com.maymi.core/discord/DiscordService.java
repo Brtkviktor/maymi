@@ -8,97 +8,118 @@ import br.com.maymi.common.network.packet.PlayerQuitPacket;
 import br.com.maymi.common.network.packet.RamResponsePacket;
 import br.com.maymi.common.network.packet.TimeResponsePacket;
 import br.com.maymi.common.network.packet.TpsResponsePacket;
-import br.com.maymi.core.configuration.ConfigurationManager;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import br.com.maymi.core.discord.DiscordService;
 
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 public class DiscordService {
 
-    public void sendPlayerJoin(PlayerJoinPacket packet) {
+    private final DiscordChannelManager channelManager;
 
-        TextChannel channel =
-                DiscordManager.getJda()
-                        .getTextChannelById("1523470172420309102");
+    public DiscordService(
+            DiscordChannelManager channelManager
+    ) {
 
-        if (channel == null) {
-
-            System.out.println("Canal do Discord não encontrado.");
-            return;
-
-        }
-
-        channel.sendMessage(
-                "🟢 " + packet.getPlayerName() + " entrou no servidor!"
-        ).queue();
-    }
-
-    public void sendChat(ChatPacket packet) {
-
-        TextChannel channel =
-                DiscordManager.getJda()
-                        .getTextChannelById("1525925443860168817");
-
-        if (channel == null) {
-            return;
-        }
-
-        channel.sendMessage(
-                "💬 **" + packet.getPlayerName() + "**: " +
-                        packet.getMessage()
-        ).queue();
+        this.channelManager =
+                channelManager;
 
     }
 
-    public void sendPlayerQuit(PlayerQuitPacket packet) {
+    public void sendPlayerJoin(
+            PlayerJoinPacket packet
+    ) {
 
         TextChannel channel =
-                DiscordManager.getJda()
-                        .getTextChannelById("1523470172420309102");
+                channelManager.getJoinLogsChannel();
 
-        if (channel == null) {
-            return;
-        }
-
-        channel.sendMessage(
-                "🔴 " + packet.getPlayerName() + " saiu do servidor!"
-        ).queue();
+        sendMessage(
+                channel,
+                "🟢 **"
+                        + packet.getPlayerName()
+                        + "** entrou no servidor!",
+                "Join Logs"
+        );
 
     }
 
-    public void sendDeath(DeathPacket packet) {
+    public void sendPlayerQuit(
+            PlayerQuitPacket packet
+    ) {
 
         TextChannel channel =
-                DiscordManager.getJda()
-                        .getTextChannelById("1526065241962844160");
+                channelManager.getJoinLogsChannel();
 
-        if (channel == null) {
-            return;
-        }
-
-        channel.sendMessage(
-                "☠️ " + packet.getDeathMessage()
-        ).queue();
+        sendMessage(
+                channel,
+                "🔴 **"
+                        + packet.getPlayerName()
+                        + "** saiu do servidor!",
+                "Join Logs"
+        );
 
     }
 
-    public void sendPlayerList(ListResponsePacket packet) {
+    public void sendChat(
+            ChatPacket packet
+    ) {
 
         TextChannel channel =
-                DiscordManager.getJda()
-                        .getTextChannelById("1526066012183593033");
+                channelManager.getChatChannel();
 
-        if (channel == null) {
-            return;
-        }
+        sendMessage(
+                channel,
+                "💬 **"
+                        + packet.getPlayerName()
+                        + "**: "
+                        + packet.getMessage(),
+                "Chat"
+        );
 
-        StringBuilder message = new StringBuilder();
+    }
 
-        message.append("👥 **Jogadores Online (")
-                .append(packet.getPlayers().size())
-                .append(")**\n\n");
+    public void sendDeath(
+            DeathPacket packet
+    ) {
 
-        for (String player : packet.getPlayers()) {
+        TextChannel channel =
+                channelManager.getDeathLogsChannel();
+
+        sendMessage(
+                channel,
+                "💀 **"
+                        + packet.getPlayerName()
+                        + "** "
+                        + packet.getDeathMessage(),
+                "Death Logs"
+        );
+
+    }
+
+    public void sendPlayerList(
+            ListResponsePacket packet
+    ) {
+
+        TextChannel channel =
+                channelManager.getCommandChannel();
+
+        StringBuilder message =
+                new StringBuilder();
+
+        message.append(
+                "👥 **Jogadores Online ("
+        );
+
+        message.append(
+                packet.getPlayers().size()
+        );
+
+        message.append(
+                ")**\n\n"
+        );
+
+        for (
+                String player :
+                packet.getPlayers()
+        ) {
 
             message.append("• ")
                     .append(player)
@@ -106,66 +127,75 @@ public class DiscordService {
 
         }
 
-        channel.sendMessage(message.toString()).queue();
+        sendMessage(
+                channel,
+                message.toString(),
+                "Comandos"
+        );
 
     }
 
-    public void sendTps(TpsResponsePacket packet) {
+    public void sendTps(
+            TpsResponsePacket packet
+    ) {
 
         TextChannel channel =
-                DiscordManager.getJda()
-                        .getTextChannelById("1526066012183593033");
+                channelManager.getCommandChannel();
 
-        if (channel == null) {
-            return;
-        }
+        String message =
+                """
+                📊 **TPS DO SERVIDOR**
 
-        channel.sendMessage("""
-            📊 **TPS DO SERVIDOR**
+                TPS: %.2f
+                """.formatted(
+                        packet.getTps()
+                );
 
-            TPS: %.2f
-            """.formatted(packet.getTps()))
-                .queue();
+        sendMessage(
+                channel,
+                message,
+                "Comandos"
+        );
 
     }
 
-    public void sendRam(RamResponsePacket packet) {
+    public void sendRam(
+            RamResponsePacket packet
+    ) {
 
         TextChannel channel =
-                DiscordManager.getJda()
-                        .getTextChannelById("1526066012183593033");
+                channelManager.getCommandChannel();
 
-        if (channel == null) {
-            return;
-        }
+        String message =
+                """
+                🖥 **MEMÓRIA DO SERVIDOR**
 
-        channel.sendMessage("""
-            🖥 **MEMÓRIA DO SERVIDOR**
+                Usada : %.2f GB
+                Livre : %.2f GB
+                Máxima: %.2f GB
+                """.formatted(
+                        packet.getUsedMemory(),
+                        packet.getFreeMemory(),
+                        packet.getMaxMemory()
+                );
 
-            Usada : %.2f GB
-            Livre : %.2f GB
-            Máxima: %.2f GB
-            """.formatted(
-                packet.getUsedMemory(),
-                packet.getFreeMemory(),
-                packet.getMaxMemory()
-        )).queue();
+        sendMessage(
+                channel,
+                message,
+                "Comandos"
+        );
 
     }
 
-    public void sendTime(TimeResponsePacket packet) {
+    public void sendTime(
+            TimeResponsePacket packet
+    ) {
 
         TextChannel channel =
-                DiscordManager.getJda()
-                        .getTextChannelById(
-                                "1526066012183593033"
-                        );
+                channelManager.getCommandChannel();
 
-        if (channel == null) {
-            return;
-        }
-
-        long time = packet.getTime();
+        long time =
+                packet.getTime();
 
         long hours =
                 ((time / 1000) + 6) % 24;
@@ -173,20 +203,49 @@ public class DiscordService {
         long minutes =
                 (time % 1000) * 60 / 1000;
 
-        channel.sendMessage("""
-            🌍 **INFORMAÇÕES DO MUNDO**
+        String message =
+                """
+                🌍 **INFORMAÇÕES DO MUNDO**
 
-            Mundo: **%s**
-            Dia: **%d**
-            Horário: **%02d:%02d**
-            """.formatted(
-                packet.getWorldName(),
-                packet.getDay(),
-                hours,
-                minutes
-        )).queue();
+                Mundo: **%s**
+                Dia: **%d**
+                Horário: **%02d:%02d**
+                """.formatted(
+                        packet.getWorldName(),
+                        packet.getDay(),
+                        hours,
+                        minutes
+                );
+
+        sendMessage(
+                channel,
+                message,
+                "Comandos"
+        );
 
     }
 
+    private void sendMessage(
+            TextChannel channel,
+            String message,
+            String channelName
+    ) {
+
+        if (channel == null) {
+
+            System.out.println(
+                    "Canal de "
+                            + channelName
+                            + " não encontrado."
+            );
+
+            return;
+        }
+
+        channel.sendMessage(
+                message
+        ).queue();
+
+    }
 
 }

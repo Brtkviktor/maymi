@@ -7,16 +7,40 @@ import br.com.maymi.common.network.packet.TimeResponsePacket;
 import br.com.maymi.common.network.packet.TpsResponsePacket;
 import br.com.maymi.paper.socket.SocketClient;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class CommandHandler {
 
-    private final SocketClient socketClient = new SocketClient();
+    private final SocketClient socketClient;
 
-    public void handle(CommandPacket packet) {
+    public CommandHandler(
+            SocketClient socketClient
+    ) {
 
-        switch (packet.getCommand().toLowerCase()) {
+        this.socketClient =
+                socketClient;
+
+    }
+
+
+    public void handle(
+            CommandPacket packet
+    ) {
+
+        String command =
+                packet.getCommand()
+                        .toLowerCase()
+                        .trim();
+
+
+        switch (command) {
+
+            // =====================================================
+            // /LIST
+            // =====================================================
 
             case "/list" -> {
 
@@ -26,45 +50,81 @@ public class CommandHandler {
                         ==============================
                         """);
 
-                List<String> players = Bukkit.getOnlinePlayers()
-                        .stream()
-                        .map(player -> player.getName())
-                        .toList();
-
-                ListResponsePacket responsePacket =
-                        new ListResponsePacket(players);
-
-
-
-                socketClient.send(responsePacket);
-
-            }
-
-            case "/tps" -> {
-
-                double tps = Bukkit.getTPS()[0];
+                List<String> players =
+                        Bukkit.getOnlinePlayers()
+                                .stream()
+                                .map(Player::getName)
+                                .toList();
 
                 socketClient.send(
-                        new TpsResponsePacket(tps)
+                        new ListResponsePacket(
+                                players
+                        )
                 );
 
             }
 
+
+            // =====================================================
+            // /TPS
+            // =====================================================
+
+            case "/tps" -> {
+
+                System.out.println("""
+                        ==============================
+                        EXECUTANDO /tps
+                        ==============================
+                        """);
+
+                double tps =
+                        Bukkit.getTPS()[0];
+
+                socketClient.send(
+                        new TpsResponsePacket(
+                                tps
+                        )
+                );
+
+            }
+
+
+            // =====================================================
+            // /RAM
+            // =====================================================
+
             case "/ram" -> {
 
-                Runtime runtime = Runtime.getRuntime();
+                System.out.println("""
+                        ==============================
+                        EXECUTANDO /ram
+                        ==============================
+                        """);
+
+                Runtime runtime =
+                        Runtime.getRuntime();
 
                 double used =
-                        (runtime.totalMemory() - runtime.freeMemory())
-                                / 1024.0 / 1024.0 / 1024.0;
+                        (
+                                runtime.totalMemory()
+                                        - runtime.freeMemory()
+                        )
+                                / 1024.0
+                                / 1024.0
+                                / 1024.0;
 
                 double free =
                         runtime.freeMemory()
-                                / 1024.0 / 1024.0 / 1024.0;
+                                / 1024.0
+                                / 1024.0
+                                / 1024.0;
 
                 double max =
                         runtime.maxMemory()
-                                / 1024.0 / 1024.0 / 1024.0;
+                                / 1024.0
+                                / 1024.0
+                                / 1024.0;
+
 
                 socketClient.send(
                         new RamResponsePacket(
@@ -76,13 +136,41 @@ public class CommandHandler {
 
             }
 
+
+            // =====================================================
+            // /TIME
+            // =====================================================
+
             case "/time" -> {
 
-                var world = Bukkit.getWorlds().get(0);
+                System.out.println("""
+                        ==============================
+                        EXECUTANDO /time
+                        ==============================
+                        """);
 
-                long day = world.getFullTime() / 24000;
+                if (Bukkit.getWorlds().isEmpty()) {
 
-                long time = world.getTime();
+                    System.out.println(
+                            "Nenhum mundo disponível."
+                    );
+
+                    return;
+                }
+
+
+                World world =
+                        Bukkit.getWorlds().get(0);
+
+
+                long day =
+                        world.getFullTime()
+                                / 24000;
+
+
+                long time =
+                        world.getTime();
+
 
                 socketClient.send(
                         new TimeResponsePacket(
@@ -94,9 +182,22 @@ public class CommandHandler {
 
             }
 
-            default -> System.out.println(
-                    "Comando desconhecido: " + packet.getCommand()
-            );
+
+            // =====================================================
+            // COMANDO DESCONHECIDO
+            // =====================================================
+
+            default -> {
+
+                System.out.println(
+                        "Comando desconhecido: "
+                                + packet.getCommand()
+                );
+
+            }
+
         }
+
     }
+
 }

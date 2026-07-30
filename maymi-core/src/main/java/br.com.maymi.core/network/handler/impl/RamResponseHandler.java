@@ -5,15 +5,27 @@ import br.com.maymi.core.discord.DiscordService;
 
 public class RamResponseHandler {
 
+    private final DiscordService discordService;
 
-    private final DiscordService discordService =
-            new DiscordService();
+    public RamResponseHandler(
+            DiscordService discordService
+    ) {
 
-    public void handle(RamResponsePacket packet){
+        this.discordService =
+                discordService;
+
+    }
+
+    public void handle(
+            RamResponsePacket packet
+    ) {
 
         System.out.println(packet);
 
-        discordService.sendRam(packet);
+        discordService.sendRam(
+                packet
+        );
 
     }
+
 }

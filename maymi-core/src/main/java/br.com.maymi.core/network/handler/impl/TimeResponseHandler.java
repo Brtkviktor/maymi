@@ -5,10 +5,20 @@ import br.com.maymi.core.discord.DiscordService;
 
 public class TimeResponseHandler {
 
-    private final DiscordService discordService =
-            new DiscordService();
+    private final DiscordService discordService;
 
-    public void handle(TimeResponsePacket packet) {
+    public TimeResponseHandler(
+            DiscordService discordService
+    ) {
+
+        this.discordService =
+                discordService;
+
+    }
+
+    public void handle(
+            TimeResponsePacket packet
+    ) {
 
         System.out.println("""
                 ==============================
@@ -24,7 +34,9 @@ public class TimeResponseHandler {
                 packet.getTime()
         ));
 
-        discordService.sendTime(packet);
+        discordService.sendTime(
+                packet
+        );
 
     }
 

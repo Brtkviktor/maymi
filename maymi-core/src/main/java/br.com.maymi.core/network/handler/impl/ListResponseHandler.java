@@ -5,12 +5,36 @@ import br.com.maymi.core.discord.DiscordService;
 
 public class ListResponseHandler {
 
-    private final DiscordService discordService =
-            new DiscordService();
+    private final DiscordService discordService;
 
-    public void handle(ListResponsePacket packet) {
+    public ListResponseHandler(
+            DiscordService discordService
+    ) {
 
-        discordService.sendPlayerList(packet);
+        this.discordService =
+                discordService;
+
+    }
+
+    public void handle(
+            ListResponsePacket packet
+    ) {
+
+        System.out.println("""
+                ==============================
+                LIST RESPONSE
+                ------------------------------
+                Jogadores online: %d
+                Jogadores: %s
+                ==============================
+                """.formatted(
+                packet.getPlayers().size(),
+                packet.getPlayers()
+        ));
+
+        discordService.sendPlayerList(
+                packet
+        );
 
     }
 

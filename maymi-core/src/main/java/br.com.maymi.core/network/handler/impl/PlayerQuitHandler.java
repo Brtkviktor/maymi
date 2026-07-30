@@ -5,10 +5,22 @@ import br.com.maymi.core.discord.DiscordService;
 
 public class PlayerQuitHandler {
 
-    private final DiscordService discordService =
-            new DiscordService();
+    private final DiscordService discordService;
 
-    public void handle(PlayerQuitPacket packet) {
+
+    public PlayerQuitHandler(
+            DiscordService discordService
+    ) {
+
+        this.discordService =
+                discordService;
+
+    }
+
+
+    public void handle(
+            PlayerQuitPacket packet
+    ) {
 
         System.out.println("""
                 ==============================
@@ -16,9 +28,13 @@ public class PlayerQuitHandler {
                 ------------------------------
                 Jogador: %s
                 ==============================
-                """.formatted(packet.getPlayerName()));
+                """.formatted(
+                packet.getPlayerName()
+        ));
 
-        discordService.sendPlayerQuit(packet);
+        discordService.sendPlayerQuit(
+                packet
+        );
 
     }
 

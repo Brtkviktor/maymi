@@ -5,14 +5,26 @@ import br.com.maymi.core.discord.DiscordService;
 
 public class TpsResponseHandler {
 
-    private final DiscordService discordService =
-            new DiscordService();
+    private final DiscordService discordService;
 
-    public void handle(TpsResponsePacket packet) {
+    public TpsResponseHandler(
+            DiscordService discordService
+    ) {
+
+        this.discordService =
+                discordService;
+
+    }
+
+    public void handle(
+            TpsResponsePacket packet
+    ) {
 
         System.out.println(packet);
 
-        discordService.sendTps(packet);
+        discordService.sendTps(
+                packet
+        );
 
     }
 

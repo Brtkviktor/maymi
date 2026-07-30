@@ -5,35 +5,59 @@ import br.com.maymi.common.network.packet.CommandPacket;
 import br.com.maymi.common.network.packet.DiscordChatPacket;
 import br.com.maymi.paper.network.handler.CommandHandler;
 import br.com.maymi.paper.network.handler.DiscordChatHandler;
+import br.com.maymi.paper.socket.SocketClient;
 
 public class PacketDispatcher {
 
-    private final DiscordChatHandler discordChatHandler =
-            new DiscordChatHandler();
+    private final DiscordChatHandler discordChatHandler;
 
-    private final CommandHandler commandHandler =
-            new CommandHandler();
+    private final CommandHandler commandHandler;
 
-    public void dispatch(Packet packet) {
+
+    public PacketDispatcher(
+            SocketClient socketClient
+    ) {
+
+        this.discordChatHandler =
+                new DiscordChatHandler();
+
+        this.commandHandler =
+                new CommandHandler(
+                        socketClient
+                );
+
+    }
+
+
+    public void dispatch(
+            Packet packet
+    ) {
 
         if (packet instanceof DiscordChatPacket chatPacket) {
 
-            discordChatHandler.handle(chatPacket);
+            discordChatHandler.handle(
+                    chatPacket
+            );
 
+            return;
         }
+
 
         if (packet instanceof CommandPacket commandPacket) {
 
-            commandHandler.handle(commandPacket);
-
-            return;
-        } else {
-
-            System.out.println(
-                    "Pacote desconhecido: " + packet.getType()
+            commandHandler.handle(
+                    commandPacket
             );
 
+            return;
         }
 
+
+        System.out.println(
+                "Pacote desconhecido: "
+                        + packet.getType()
+        );
+
     }
+
 }

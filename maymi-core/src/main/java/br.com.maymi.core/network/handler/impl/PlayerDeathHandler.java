@@ -5,10 +5,20 @@ import br.com.maymi.core.discord.DiscordService;
 
 public class PlayerDeathHandler {
 
-    private final DiscordService discordService =
-            new DiscordService();
+    private final DiscordService discordService;
 
-    public void handle(DeathPacket packet) {
+    public PlayerDeathHandler(
+            DiscordService discordService
+    ) {
+
+        this.discordService =
+                discordService;
+
+    }
+
+    public void handle(
+            DeathPacket packet
+    ) {
 
         System.out.println("""
                 ==============================
@@ -22,7 +32,9 @@ public class PlayerDeathHandler {
                 packet.getDeathMessage()
         ));
 
-        discordService.sendDeath(packet);
+        discordService.sendDeath(
+                packet
+        );
 
     }
 
