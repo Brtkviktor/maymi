@@ -41,4 +41,40 @@ public final class ConfigurationManager {
         );
     }
 
+    public static String getDashboardChannel() {
+        return dotenv.get("DISCORD_CHANNEL_DASHBOARD");
+    }
+
+    public static long getDashboardUpdateSeconds() {
+
+        String value =
+                dotenv.get(
+                        "DASHBOARD_UPDATE_SECONDS",
+                        "30"
+                );
+
+        return Long.parseLong(value);
+    }
+
+    public static String getDashboardMessageId() {
+
+        return dotenv.get(
+                "DISCORD_DASHBOARD_MESSAGE_ID",
+                ""
+        );
+    }
+
+    public static String getLevelLogsChannel() {
+        return dotenv.get(
+                "DISCORD_CHANNEL_LEVEL_LOGS"
+        );
+    }
+
+    public static String getAchievementChannelId() {
+
+        return dotenv.get(
+                "DISCORD_CHANNEL_ACHIEVEMENTS"
+        );
+    }
+
 }

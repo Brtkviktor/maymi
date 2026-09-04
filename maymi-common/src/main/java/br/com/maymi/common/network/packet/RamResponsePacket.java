@@ -8,20 +8,39 @@ public class RamResponsePacket extends AbstractPacket {
     private double usedMemory;
     private double freeMemory;
     private double maxMemory;
+    private String requestId;
 
     public RamResponsePacket() {
         super(PacketType.RAM_RESPONSE);
     }
 
-    public RamResponsePacket(double usedMemory,
-                             double freeMemory,
-                             double maxMemory) {
+    public RamResponsePacket(
+            double usedMemory,
+            double freeMemory,
+            double maxMemory
+    ) {
+
+        this(
+                usedMemory,
+                freeMemory,
+                maxMemory,
+                null
+        );
+    }
+
+    public RamResponsePacket(
+            double usedMemory,
+            double freeMemory,
+            double maxMemory,
+            String requestId
+    ) {
 
         super(PacketType.RAM_RESPONSE);
 
         this.usedMemory = usedMemory;
         this.freeMemory = freeMemory;
         this.maxMemory = maxMemory;
+        this.requestId = requestId;
     }
 
     public double getUsedMemory() {
@@ -36,6 +55,10 @@ public class RamResponsePacket extends AbstractPacket {
         return maxMemory;
     }
 
+    public String getRequestId() {
+        return requestId;
+    }
+
     public void setUsedMemory(double usedMemory) {
         this.usedMemory = usedMemory;
     }
@@ -46,5 +69,9 @@ public class RamResponsePacket extends AbstractPacket {
 
     public void setMaxMemory(double maxMemory) {
         this.maxMemory = maxMemory;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 }

@@ -1,16 +1,22 @@
 package br.com.maymi.common.network.registry;
 import br.com.maymi.common.network.Packet;
 import br.com.maymi.common.network.PacketType;
+import br.com.maymi.common.network.packet.BlockBreakPacket;
+import br.com.maymi.common.network.packet.BlockPlacePacket;
 import br.com.maymi.common.network.packet.ChatPacket;
 import br.com.maymi.common.network.packet.CommandPacket;
 import br.com.maymi.common.network.packet.DeathPacket;
 import br.com.maymi.common.network.packet.DiscordChatPacket;
 import br.com.maymi.common.network.packet.ListResponsePacket;
+import br.com.maymi.common.network.packet.MobKillPacket;
 import br.com.maymi.common.network.packet.PlayerJoinPacket;
 import br.com.maymi.common.network.packet.PlayerQuitPacket;
 import br.com.maymi.common.network.packet.RamResponsePacket;
 import br.com.maymi.common.network.packet.TimeResponsePacket;
 import br.com.maymi.common.network.packet.TpsResponsePacket;
+import br.com.maymi.common.network.packet.DashboardResponsePacket;
+import br.com.maymi.common.network.packet.PlayerInfoRequestPacket;
+import br.com.maymi.common.network.packet.PlayerInfoResponsePacket;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,6 +80,35 @@ public final class PacketRegistry {
         REGISTRY.put(
                 PacketType.TIME_RESPONSE,
                 TimeResponsePacket.class
+        );
+
+        REGISTRY.put(
+                PacketType.DASHBOARD_RESPONSE,
+                DashboardResponsePacket.class
+        );
+
+        REGISTRY.put(
+                PacketType.PLAYER_INFO_REQUEST,
+                PlayerInfoRequestPacket.class
+        );
+
+        REGISTRY.put(
+                PacketType.PLAYER_INFO_RESPONSE,
+                PlayerInfoResponsePacket.class
+        );
+        REGISTRY.put(
+                PacketType.MOB_KILL,
+                MobKillPacket.class
+        );
+
+        REGISTRY.put(
+                PacketType.BLOCK_PLACE,
+                BlockPlacePacket.class
+        );
+
+        REGISTRY.put(
+                PacketType.BLOCK_BREAK,
+                BlockBreakPacket.class
         );
     }
 

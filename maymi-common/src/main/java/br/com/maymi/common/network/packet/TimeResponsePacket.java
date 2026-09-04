@@ -8,6 +8,7 @@ public class TimeResponsePacket extends AbstractPacket {
     private String worldName;
     private long day;
     private long time;
+    private String requestId;
 
     public TimeResponsePacket() {
         super(PacketType.TIME_RESPONSE);
@@ -19,11 +20,27 @@ public class TimeResponsePacket extends AbstractPacket {
             long time
     ) {
 
+        this(
+                worldName,
+                day,
+                time,
+                null
+        );
+    }
+
+    public TimeResponsePacket(
+            String worldName,
+            long day,
+            long time,
+            String requestId
+    ) {
+
         super(PacketType.TIME_RESPONSE);
 
         this.worldName = worldName;
         this.day = day;
         this.time = time;
+        this.requestId = requestId;
     }
 
     public String getWorldName() {
@@ -38,7 +55,14 @@ public class TimeResponsePacket extends AbstractPacket {
         return time;
     }
 
-    public void setWorldName(String worldName) {
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setWorldName(
+            String worldName
+    ) {
+
         this.worldName = worldName;
     }
 
@@ -50,4 +74,10 @@ public class TimeResponsePacket extends AbstractPacket {
         this.time = time;
     }
 
+    public void setRequestId(
+            String requestId
+    ) {
+
+        this.requestId = requestId;
+    }
 }

@@ -46,3 +46,21 @@ build/
 
 # Arquivos de configuração locais
 config.local.yml
+
+# ==============================
+# Local databases
+# ==============================
+*.db
+*.sqlite
+*.sqlite3
+
+# ==============================
+# Local archives / backups
+# ==============================
+botmayneo.zip
+
+# ==============================
+# Environment / secrets
+# ==============================
+.env.*
+!.env.example

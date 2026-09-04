@@ -1,26 +1,39 @@
 package br.com.maymi.core.network.dispatcher;
 
 import br.com.maymi.common.network.packet.ChatPacket;
+import br.com.maymi.common.network.packet.DashboardResponsePacket;
 import br.com.maymi.common.network.packet.DeathPacket;
 import br.com.maymi.common.network.packet.ListResponsePacket;
+import br.com.maymi.common.network.packet.MobKillPacket;
+import br.com.maymi.common.network.packet.PlayerInfoResponsePacket;
 import br.com.maymi.common.network.packet.PlayerJoinPacket;
 import br.com.maymi.common.network.packet.PlayerQuitPacket;
 import br.com.maymi.common.network.packet.RamResponsePacket;
 import br.com.maymi.common.network.packet.TimeResponsePacket;
 import br.com.maymi.common.network.packet.TpsResponsePacket;
+
+import br.com.maymi.core.network.handler.impl.BlockBreakHandler;
+import br.com.maymi.core.network.handler.impl.BlockPlaceHandler;
 import br.com.maymi.core.network.handler.impl.ChatHandler;
+import br.com.maymi.core.network.handler.impl.DashboardResponseHandler;
 import br.com.maymi.core.network.handler.impl.ListResponseHandler;
+import br.com.maymi.core.network.handler.impl.MobKillHandler;
 import br.com.maymi.core.network.handler.impl.PlayerDeathHandler;
+import br.com.maymi.core.network.handler.impl.PlayerInfoResponseHandler;
 import br.com.maymi.core.network.handler.impl.PlayerJoinHandler;
 import br.com.maymi.core.network.handler.impl.PlayerQuitHandler;
 import br.com.maymi.core.network.handler.impl.RamResponseHandler;
 import br.com.maymi.core.network.handler.impl.TimeResponseHandler;
 import br.com.maymi.core.network.handler.impl.TpsResponseHandler;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.UUID;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 class PacketDispatcherTest {
 
@@ -51,6 +64,15 @@ class PacketDispatcherTest {
         TimeResponseHandler timeResponseHandler =
                 mock(TimeResponseHandler.class);
 
+        DashboardResponseHandler dashboardResponseHandler =
+                mock(DashboardResponseHandler.class);
+
+        PlayerInfoResponseHandler playerInfoResponseHandler =
+                mock(PlayerInfoResponseHandler.class);
+
+        MobKillHandler mobKillHandler =
+                mock(MobKillHandler.class);
+
         PacketDispatcher dispatcher =
                 criarDispatcher(
                         playerJoinHandler,
@@ -60,11 +82,19 @@ class PacketDispatcherTest {
                         listResponseHandler,
                         tpsResponseHandler,
                         ramResponseHandler,
-                        timeResponseHandler
+                        timeResponseHandler,
+                        dashboardResponseHandler,
+                        playerInfoResponseHandler,
+                        mock(MobKillHandler.class),
+                        mock(BlockPlaceHandler.class),
+                        mock(BlockBreakHandler.class)
                 );
 
         PlayerJoinPacket packet =
-                new PlayerJoinPacket("BRtkViktor");
+                new PlayerJoinPacket(
+                        UUID.randomUUID().toString(),
+                        "BRtkViktor"
+                );
 
         dispatcher.dispatch(packet);
 
@@ -78,10 +108,12 @@ class PacketDispatcherTest {
                 listResponseHandler,
                 tpsResponseHandler,
                 ramResponseHandler,
-                timeResponseHandler
+                timeResponseHandler,
+                dashboardResponseHandler,
+                playerInfoResponseHandler,
+                mobKillHandler
         );
     }
-
 
     @Test
     void deveEncaminharChatParaHandlerCorreto() {
@@ -98,7 +130,12 @@ class PacketDispatcherTest {
                         mock(ListResponseHandler.class),
                         mock(TpsResponseHandler.class),
                         mock(RamResponseHandler.class),
-                        mock(TimeResponseHandler.class)
+                        mock(TimeResponseHandler.class),
+                        mock(DashboardResponseHandler.class),
+                        mock(PlayerInfoResponseHandler.class),
+                        mock(MobKillHandler.class),
+                        mock(BlockPlaceHandler.class),
+                        mock(BlockBreakHandler.class)
                 );
 
         ChatPacket packet =
@@ -112,7 +149,6 @@ class PacketDispatcherTest {
         verify(chatHandler)
                 .handle(packet);
     }
-
 
     @Test
     void deveEncaminharPlayerQuitParaHandlerCorreto() {
@@ -129,18 +165,25 @@ class PacketDispatcherTest {
                         mock(ListResponseHandler.class),
                         mock(TpsResponseHandler.class),
                         mock(RamResponseHandler.class),
-                        mock(TimeResponseHandler.class)
+                        mock(TimeResponseHandler.class),
+                        mock(DashboardResponseHandler.class),
+                        mock(PlayerInfoResponseHandler.class),
+                        mock(MobKillHandler.class),
+                        mock(BlockPlaceHandler.class),
+                        mock(BlockBreakHandler.class)
                 );
 
         PlayerQuitPacket packet =
-                new PlayerQuitPacket("BRtkViktor");
+                new PlayerQuitPacket(
+                        UUID.randomUUID().toString(),
+                        "BRtkViktor"
+                );
 
         dispatcher.dispatch(packet);
 
         verify(playerQuitHandler)
                 .handle(packet);
     }
-
 
     @Test
     void deveEncaminharDeathParaHandlerCorreto() {
@@ -157,13 +200,21 @@ class PacketDispatcherTest {
                         mock(ListResponseHandler.class),
                         mock(TpsResponseHandler.class),
                         mock(RamResponseHandler.class),
-                        mock(TimeResponseHandler.class)
+                        mock(TimeResponseHandler.class),
+                        mock(DashboardResponseHandler.class),
+                        mock(PlayerInfoResponseHandler.class),
+                        mock(MobKillHandler.class),
+                        mock(BlockPlaceHandler.class),
+                        mock(BlockBreakHandler.class)
                 );
 
         DeathPacket packet =
                 new DeathPacket(
+                        UUID.randomUUID().toString(),
                         "BRtkViktor",
-                        "caiu de um lugar alto"
+                        "foi morto por um zumbi",
+                        "ENTITY_ATTACK",
+                        "ZOMBIE"
                 );
 
         dispatcher.dispatch(packet);
@@ -171,7 +222,6 @@ class PacketDispatcherTest {
         verify(playerDeathHandler)
                 .handle(packet);
     }
-
 
     @Test
     void deveEncaminharListResponseParaHandlerCorreto() {
@@ -188,7 +238,12 @@ class PacketDispatcherTest {
                         listResponseHandler,
                         mock(TpsResponseHandler.class),
                         mock(RamResponseHandler.class),
-                        mock(TimeResponseHandler.class)
+                        mock(TimeResponseHandler.class),
+                        mock(DashboardResponseHandler.class),
+                        mock(PlayerInfoResponseHandler.class),
+                        mock(MobKillHandler.class),
+                        mock(BlockPlaceHandler.class),
+                        mock(BlockBreakHandler.class)
                 );
 
         ListResponsePacket packet =
@@ -205,7 +260,6 @@ class PacketDispatcherTest {
                 .handle(packet);
     }
 
-
     @Test
     void deveEncaminharTpsResponseParaHandlerCorreto() {
 
@@ -221,7 +275,12 @@ class PacketDispatcherTest {
                         mock(ListResponseHandler.class),
                         tpsResponseHandler,
                         mock(RamResponseHandler.class),
-                        mock(TimeResponseHandler.class)
+                        mock(TimeResponseHandler.class),
+                        mock(DashboardResponseHandler.class),
+                        mock(PlayerInfoResponseHandler.class),
+                        mock(MobKillHandler.class),
+                        mock(BlockPlaceHandler.class),
+                        mock(BlockBreakHandler.class)
                 );
 
         TpsResponsePacket packet =
@@ -232,7 +291,6 @@ class PacketDispatcherTest {
         verify(tpsResponseHandler)
                 .handle(packet);
     }
-
 
     @Test
     void deveEncaminharRamResponseParaHandlerCorreto() {
@@ -249,7 +307,12 @@ class PacketDispatcherTest {
                         mock(ListResponseHandler.class),
                         mock(TpsResponseHandler.class),
                         ramResponseHandler,
-                        mock(TimeResponseHandler.class)
+                        mock(TimeResponseHandler.class),
+                        mock(DashboardResponseHandler.class),
+                        mock(PlayerInfoResponseHandler.class),
+                        mock(MobKillHandler.class),
+                        mock(BlockPlaceHandler.class),
+                        mock(BlockBreakHandler.class)
                 );
 
         RamResponsePacket packet =
@@ -264,7 +327,6 @@ class PacketDispatcherTest {
         verify(ramResponseHandler)
                 .handle(packet);
     }
-
 
     @Test
     void deveEncaminharTimeResponseParaHandlerCorreto() {
@@ -281,7 +343,12 @@ class PacketDispatcherTest {
                         mock(ListResponseHandler.class),
                         mock(TpsResponseHandler.class),
                         mock(RamResponseHandler.class),
-                        timeResponseHandler
+                        timeResponseHandler,
+                        mock(DashboardResponseHandler.class),
+                        mock(PlayerInfoResponseHandler.class),
+                        mock(MobKillHandler.class),
+                        mock(BlockPlaceHandler.class),
+                        mock(BlockBreakHandler.class)
                 );
 
         TimeResponsePacket packet =
@@ -297,6 +364,106 @@ class PacketDispatcherTest {
                 .handle(packet);
     }
 
+    @Test
+    void deveEncaminharDashboardResponseParaHandlerCorreto() {
+
+        DashboardResponseHandler dashboardResponseHandler =
+                mock(DashboardResponseHandler.class);
+
+        PacketDispatcher dispatcher =
+                criarDispatcher(
+                        mock(PlayerJoinHandler.class),
+                        mock(ChatHandler.class),
+                        mock(PlayerQuitHandler.class),
+                        mock(PlayerDeathHandler.class),
+                        mock(ListResponseHandler.class),
+                        mock(TpsResponseHandler.class),
+                        mock(RamResponseHandler.class),
+                        mock(TimeResponseHandler.class),
+                        dashboardResponseHandler,
+                        mock(PlayerInfoResponseHandler.class),
+                        mock(MobKillHandler.class),
+                        mock(BlockPlaceHandler.class),
+                        mock(BlockBreakHandler.class)
+                );
+
+        DashboardResponsePacket packet =
+                new DashboardResponsePacket();
+
+        dispatcher.dispatch(packet);
+
+        verify(dashboardResponseHandler)
+                .handle(packet);
+    }
+
+    @Test
+    void deveEncaminharPlayerInfoResponseParaHandlerCorreto() {
+
+        PlayerInfoResponseHandler playerInfoResponseHandler =
+                mock(PlayerInfoResponseHandler.class);
+
+        PacketDispatcher dispatcher =
+                criarDispatcher(
+                        mock(PlayerJoinHandler.class),
+                        mock(ChatHandler.class),
+                        mock(PlayerQuitHandler.class),
+                        mock(PlayerDeathHandler.class),
+                        mock(ListResponseHandler.class),
+                        mock(TpsResponseHandler.class),
+                        mock(RamResponseHandler.class),
+                        mock(TimeResponseHandler.class),
+                        mock(DashboardResponseHandler.class),
+                        playerInfoResponseHandler,
+                        mock(MobKillHandler.class),
+                        mock(BlockPlaceHandler.class),
+                        mock(BlockBreakHandler.class)
+                );
+
+        PlayerInfoResponsePacket packet =
+                new PlayerInfoResponsePacket();
+
+        dispatcher.dispatch(packet);
+
+        verify(playerInfoResponseHandler)
+                .handle(packet);
+    }
+
+    @Test
+    void deveEncaminharMobKillParaHandlerCorreto() {
+
+        MobKillHandler mobKillHandler =
+                mock(MobKillHandler.class);
+
+        PacketDispatcher dispatcher =
+                criarDispatcher(
+                        mock(PlayerJoinHandler.class),
+                        mock(ChatHandler.class),
+                        mock(PlayerQuitHandler.class),
+                        mock(PlayerDeathHandler.class),
+                        mock(ListResponseHandler.class),
+                        mock(TpsResponseHandler.class),
+                        mock(RamResponseHandler.class),
+                        mock(TimeResponseHandler.class),
+                        mock(DashboardResponseHandler.class),
+                        mock(PlayerInfoResponseHandler.class),
+                        mobKillHandler,
+                        mock(BlockPlaceHandler.class),
+                        mock(BlockBreakHandler.class)
+                );
+
+        MobKillPacket packet =
+                new MobKillPacket(
+                        UUID.randomUUID().toString(),
+                        "BRtkViktor",
+                        "ZOMBIE",
+                        "Zombie"
+                );
+
+        dispatcher.dispatch(packet);
+
+        verify(mobKillHandler)
+                .handle(packet);
+    }
 
     private PacketDispatcher criarDispatcher(
             PlayerJoinHandler playerJoinHandler,
@@ -306,7 +473,12 @@ class PacketDispatcherTest {
             ListResponseHandler listResponseHandler,
             TpsResponseHandler tpsResponseHandler,
             RamResponseHandler ramResponseHandler,
-            TimeResponseHandler timeResponseHandler
+            TimeResponseHandler timeResponseHandler,
+            DashboardResponseHandler dashboardResponseHandler,
+            PlayerInfoResponseHandler playerInfoResponseHandler,
+            MobKillHandler mobKillHandler,
+            BlockPlaceHandler blockPlaceHandler,
+            BlockBreakHandler blockBreakHandler
     ) {
 
         return new PacketDispatcher(
@@ -317,8 +489,12 @@ class PacketDispatcherTest {
                 listResponseHandler,
                 tpsResponseHandler,
                 ramResponseHandler,
-                timeResponseHandler
+                timeResponseHandler,
+                dashboardResponseHandler,
+                playerInfoResponseHandler,
+                mobKillHandler,
+                blockPlaceHandler,
+                blockBreakHandler
         );
     }
-
 }

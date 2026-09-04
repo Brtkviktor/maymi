@@ -117,4 +117,76 @@ public class DiscordChannelManager {
 
     }
 
+    public TextChannel getLevelLogsChannel() {
+
+        String channelId =
+                ConfigurationManager
+                        .getLevelLogsChannel();
+
+        if (
+                channelId == null
+                        || channelId.isBlank()
+        ) {
+            return null;
+        }
+
+        TextChannel channel =
+                DiscordManager
+                        .getJda()
+                        .getTextChannelById(
+                                channelId
+                        );
+
+        if (channel != null) {
+
+            System.out.println(
+                    "[DiscordChannelManager] Level Logs Channel ID: "
+                            + channel.getId()
+            );
+
+            System.out.println(
+                    "[DiscordChannelManager] Level Logs Channel: "
+                            + channel.getName()
+            );
+        }
+
+        return channel;
+    }
+
+    public TextChannel getAchievementChannel() {
+
+        String channelId =
+                ConfigurationManager
+                        .getAchievementChannelId();
+
+        if (
+                channelId == null
+                        || channelId.isBlank()
+        ) {
+            return null;
+        }
+
+        TextChannel channel =
+                DiscordManager
+                        .getJda()
+                        .getTextChannelById(
+                                channelId
+                        );
+
+        if (channel != null) {
+
+            System.out.println(
+                    "[DiscordChannelManager] Achievement Channel ID: "
+                            + channel.getId()
+            );
+
+            System.out.println(
+                    "[DiscordChannelManager] Achievement Channel: "
+                            + channel.getName()
+            );
+        }
+
+        return channel;
+    }
+
 }

@@ -85,10 +85,7 @@ public class DiscordService {
 
         sendMessage(
                 channel,
-                "💀 **"
-                        + packet.getPlayerName()
-                        + "** "
-                        + packet.getDeathMessage(),
+                "💀 " + packet.getDeathMessage(),
                 "Death Logs"
         );
 

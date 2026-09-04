@@ -1,6 +1,7 @@
 package br.com.maymi.paper.network.handler;
 
 import br.com.maymi.common.network.packet.CommandPacket;
+import br.com.maymi.common.network.packet.DashboardResponsePacket;
 import br.com.maymi.common.network.packet.ListResponsePacket;
 import br.com.maymi.common.network.packet.RamResponsePacket;
 import br.com.maymi.common.network.packet.TimeResponsePacket;
@@ -10,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.lang.management.ManagementFactory;
 import java.util.List;
 
 public class CommandHandler {
@@ -25,7 +27,6 @@ public class CommandHandler {
 
     }
 
-
     public void handle(
             CommandPacket packet
     ) {
@@ -35,6 +36,8 @@ public class CommandHandler {
                         .toLowerCase()
                         .trim();
 
+        String requestId =
+                packet.getRequestId();
 
         switch (command) {
 
@@ -42,13 +45,17 @@ public class CommandHandler {
             // /LIST
             // =====================================================
 
-            case "/list" -> {
+            case "/list",
+                 "/players" -> {
 
                 System.out.println("""
                         ==============================
                         EXECUTANDO /list
+                        Request ID: %s
                         ==============================
-                        """);
+                        """.formatted(
+                        requestId
+                ));
 
                 List<String> players =
                         Bukkit.getOnlinePlayers()
@@ -58,12 +65,12 @@ public class CommandHandler {
 
                 socketClient.send(
                         new ListResponsePacket(
-                                players
+                                players,
+                                requestId
                         )
                 );
 
             }
-
 
             // =====================================================
             // /TPS
@@ -74,20 +81,23 @@ public class CommandHandler {
                 System.out.println("""
                         ==============================
                         EXECUTANDO /tps
+                        Request ID: %s
                         ==============================
-                        """);
+                        """.formatted(
+                        requestId
+                ));
 
                 double tps =
                         Bukkit.getTPS()[0];
 
                 socketClient.send(
                         new TpsResponsePacket(
-                                tps
+                                tps,
+                                requestId
                         )
                 );
 
             }
-
 
             // =====================================================
             // /RAM
@@ -98,8 +108,11 @@ public class CommandHandler {
                 System.out.println("""
                         ==============================
                         EXECUTANDO /ram
+                        Request ID: %s
                         ==============================
-                        """);
+                        """.formatted(
+                        requestId
+                ));
 
                 Runtime runtime =
                         Runtime.getRuntime();
@@ -125,17 +138,16 @@ public class CommandHandler {
                                 / 1024.0
                                 / 1024.0;
 
-
                 socketClient.send(
                         new RamResponsePacket(
                                 used,
                                 free,
-                                max
+                                max,
+                                requestId
                         )
                 );
 
             }
-
 
             // =====================================================
             // /TIME
@@ -146,8 +158,11 @@ public class CommandHandler {
                 System.out.println("""
                         ==============================
                         EXECUTANDO /time
+                        Request ID: %s
                         ==============================
-                        """);
+                        """.formatted(
+                        requestId
+                ));
 
                 if (Bukkit.getWorlds().isEmpty()) {
 
@@ -158,30 +173,151 @@ public class CommandHandler {
                     return;
                 }
 
-
                 World world =
                         Bukkit.getWorlds().get(0);
-
 
                 long day =
                         world.getFullTime()
                                 / 24000;
 
-
                 long time =
                         world.getTime();
-
 
                 socketClient.send(
                         new TimeResponsePacket(
                                 world.getName(),
                                 day,
-                                time
+                                time,
+                                requestId
                         )
                 );
 
             }
 
+            // =====================================================
+// /DASHBOARD
+// =====================================================
+
+            case "/dashboard" -> {
+
+                System.out.println("""
+            ==============================
+            EXECUTANDO /dashboard
+            Request ID: %s
+            ==============================
+            """.formatted(
+                        requestId
+                ));
+
+                if (Bukkit.getWorlds().isEmpty()) {
+
+                    System.out.println(
+                            "Não foi possível gerar o dashboard: "
+                                    + "nenhum mundo está disponível."
+                    );
+
+                    return;
+                }
+
+                // =================================================
+                // DESEMPENHO
+                // =================================================
+
+                double tps =
+                        Bukkit.getTPS()[0];
+
+                double mspt =
+                        Bukkit.getServer()
+                                .getAverageTickTime();
+
+                // =================================================
+                // MEMÓRIA
+                // =================================================
+
+                Runtime runtime =
+                        Runtime.getRuntime();
+
+                double usedMemory =
+                        (
+                                runtime.totalMemory()
+                                        - runtime.freeMemory()
+                        )
+                                / 1024.0
+                                / 1024.0
+                                / 1024.0;
+
+                double freeMemory =
+                        runtime.freeMemory()
+                                / 1024.0
+                                / 1024.0
+                                / 1024.0;
+
+                double maxMemory =
+                        runtime.maxMemory()
+                                / 1024.0
+                                / 1024.0
+                                / 1024.0;
+
+                // =================================================
+                // JOGADORES
+                // =================================================
+
+                int onlinePlayers =
+                        Bukkit.getOnlinePlayers()
+                                .size();
+
+                int maxPlayers =
+                        Bukkit.getMaxPlayers();
+
+                // =================================================
+                // MUNDO
+                // =================================================
+
+                World world =
+                        Bukkit.getWorlds().get(0);
+
+                String worldName =
+                        world.getName();
+
+                long day =
+                        world.getFullTime()
+                                / 24000;
+
+                long time =
+                        world.getTime();
+
+                // =================================================
+                // UPTIME
+                // =================================================
+
+                long uptime =
+                        ManagementFactory
+                                .getRuntimeMXBean()
+                                .getUptime();
+
+                // =================================================
+                // RESPOSTA
+                // =================================================
+
+                DashboardResponsePacket response =
+                        new DashboardResponsePacket(
+                                tps,
+                                mspt,
+                                usedMemory,
+                                freeMemory,
+                                maxMemory,
+                                onlinePlayers,
+                                maxPlayers,
+                                worldName,
+                                day,
+                                time,
+                                uptime,
+                                requestId
+                        );
+
+                socketClient.send(response);
+
+            }
 
             // =====================================================
             // COMANDO DESCONHECIDO

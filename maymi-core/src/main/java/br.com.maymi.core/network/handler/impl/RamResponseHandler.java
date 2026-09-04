@@ -2,30 +2,35 @@ package br.com.maymi.core.network.handler.impl;
 
 import br.com.maymi.common.network.packet.RamResponsePacket;
 import br.com.maymi.core.discord.DiscordService;
+import br.com.maymi.core.discord.interaction.InteractionResponseService;
 
 public class RamResponseHandler {
 
     private final DiscordService discordService;
+    private final InteractionResponseService interactionResponseService;
 
     public RamResponseHandler(
-            DiscordService discordService
+            DiscordService discordService,
+            InteractionResponseService interactionResponseService
     ) {
-
-        this.discordService =
-                discordService;
-
+        this.discordService = discordService;
+        this.interactionResponseService = interactionResponseService;
     }
 
-    public void handle(
-            RamResponsePacket packet
-    ) {
+    public void handle(RamResponsePacket packet) {
 
-        System.out.println(packet);
+        boolean interactionAnswered =
+                interactionResponseService.replyRam(
+                        packet.getRequestId(),
+                        packet.getUsedMemory(),
+                        packet.getFreeMemory(),
+                        packet.getMaxMemory()
+                );
 
-        discordService.sendRam(
-                packet
-        );
+        if (interactionAnswered) {
+            return;
+        }
 
+        discordService.sendRam(packet);
     }
-
 }

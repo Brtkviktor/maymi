@@ -5,15 +5,31 @@ import br.com.maymi.common.network.PacketType;
 
 public class PlayerJoinPacket extends AbstractPacket {
 
+    private String playerUuid;
     private String playerName;
 
     public PlayerJoinPacket() {
         super(PacketType.PLAYER_JOIN);
     }
 
-    public PlayerJoinPacket(String playerName) {
+    public PlayerJoinPacket(
+            String playerUuid,
+            String playerName
+    ) {
         super(PacketType.PLAYER_JOIN);
+
+        this.playerUuid = playerUuid;
         this.playerName = playerName;
+    }
+
+    
+
+    public String getPlayerUuid() {
+        return playerUuid;
+    }
+
+    public void setPlayerUuid(String playerUuid) {
+        this.playerUuid = playerUuid;
     }
 
     public String getPlayerName() {
@@ -27,16 +43,17 @@ public class PlayerJoinPacket extends AbstractPacket {
     @Override
     public String toString() {
         return """
-            ==============================
-            PLAYER JOIN PACKET
-            ------------------------------
-            Nome: %s
-            Tipo: %s
-            ==============================
-            """.formatted(
+                ==============================
+                PLAYER JOIN PACKET
+                ------------------------------
+                UUID: %s
+                Nome: %s
+                Tipo: %s
+                ==============================
+                """.formatted(
+                playerUuid,
                 playerName,
                 getType()
         );
     }
-
 }

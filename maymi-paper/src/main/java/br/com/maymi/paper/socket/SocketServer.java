@@ -3,6 +3,7 @@ package br.com.maymi.paper.socket;
 import br.com.maymi.common.network.Packet;
 import br.com.maymi.common.network.parser.PacketDeserializer;
 import br.com.maymi.paper.network.dispatcher.PacketDispatcher;
+import br.com.maymi.paper.player.session.PlayerSessionManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,14 +17,17 @@ public class SocketServer {
 
     private final PacketDispatcher dispatcher;
 
-    public SocketServer() {
+    public SocketServer(
+            PlayerSessionManager playerSessionManager
+    ) {
 
         SocketClient socketClient =
                 new SocketClient();
 
         this.dispatcher =
                 new PacketDispatcher(
-                        socketClient
+                        socketClient,
+                        playerSessionManager
                 );
 
     }
